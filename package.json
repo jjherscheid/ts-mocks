@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
     "author": {
         "name": "Johan Herscheid <johanherscheid@gmail.com>"
@@ -13,6 +13,6 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git://github.com/jjhescheid/ts-mocks.git"
+        "url": "git://github.com/jjherscheid/ts-mocks.git"
     }
 }
