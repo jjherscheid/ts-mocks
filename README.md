@@ -44,8 +44,8 @@ beforeEach(inject([ ..., CookieService], (... , _cookieService: CookieService) =
 }));
 ```
 
-This works 'Okay' but there is no real intellisence for you when you are mocking your objects.  
-With this framework it is possible to create Mock objects with intellisence and possibility to
+This works 'Okay' but there is no real intellisense for you when you are mocking your objects.  
+With this framework it is possible to create Mock objects with intellisense and possibility to
 override methods during your tests.
 
 ```javascript
