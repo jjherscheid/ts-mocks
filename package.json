@@ -1,0 +1,18 @@
+{
+    "version": "0.0.1",
+    "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
+    "author": {
+        "name": "Johan Herscheid <johanherscheid@gmail.com>"
+    },
+    "license": "MIT",
+    "name": "ts-mocks",
+    "main": "lib/index.js",
+    "typings": "lib/index",
+    "files": [
+        "lib/"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/jjhescheid/ts-mocks.git"
+    }
+}
