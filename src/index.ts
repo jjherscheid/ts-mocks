@@ -83,7 +83,7 @@ export class Mock<T> {
     /** Create a mock setup for the mocked object */
     public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
         // Get the property name using a regular expression
-        let propertyAs = value.toString().match(/return\s[\w\d]*\.([\w\d]*)\;/)[1];
+        let propertyAs = value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
 
         // Create a Setup and return it
         return new Setup(this._object, propertyAs, this.originalPropertyValues);
