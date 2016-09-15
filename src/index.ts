@@ -7,8 +7,7 @@ export class Setup<T, TReturn> {
         private object: T,
         private key: string,
         private originalValues: any[]
-    ) { 
-        this.returns(null);
+    ) {         
     }
 
     /** Setup the return value for the setup of the property */
