@@ -1,6 +1,6 @@
 # Typescript Mocking Framework
 
-Create Mock objects for Typescript Classes and Interfaces
+Create Mock objects for Typescript Classes and Interfaces  
 Jasmine Spy is automatically created during setup method
 
 **Example**:
