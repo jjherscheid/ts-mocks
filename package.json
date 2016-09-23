@@ -1,19 +1,33 @@
 {
-    "version": "0.1.1",
-    "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
-    "author": {
-        "name": "Johan Herscheid <johanherscheid@gmail.com>"
-    },
-    "license": "MIT",
-    "name": "ts-mocks",
-    "main": "lib/index.js",
-    "typings": "lib/index",
-    "files": [
-        "lib/",
-        "README.md"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/jjherscheid/ts-mocks.git"
-    }
+  "version": "0.2.0",
+  "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
+  "author": {
+    "name": "Johan Herscheid <johanherscheid@gmail.com>"
+  },
+  "scripts": {
+    "prebuild": "typings install && rimraf lib",
+    "build": "tsc"
+  },
+  "keywords": [
+    "typescript",
+    "mocking"
+  ],
+  "license": "MIT",
+  "name": "ts-mocks",
+  "main": "lib/index.js",
+  "typings": "lib/index",
+  "files": [
+    "lib/",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jjherscheid/ts-mocks.git"
+  },
+  "devDependencies": {
+    "jasmine": "^2.5.2",
+    "rimraf": "^2.5.4",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.3"
+  }
 }
