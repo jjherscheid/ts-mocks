@@ -35,10 +35,10 @@ let cookiesService: CookieService;
 
 // Add the providers
 beforeEach(() => {
-  addProviders([
+  TestBed.configureTestingModule({
     ...,
-    { provide: CookieService, useClass: MockCookieService }
-  ]);
+    providers: [{ provide: CookieService, useClass: MockCookieService }]
+    });
 });
 
 // Inject values
@@ -67,10 +67,10 @@ beforeEach(() => {
   mockCookieService.setup(ls => ls.get);
   mockCookieService.setup(ls => ls.put); 
 
-  addProviders([
-    ...,
-    { provide: CookieService, useValue: mockCookieService.Object }
-  ]);
+  TestBed.configureTestingModule({
+    ...
+    providers: [{ provide: CookieService, useValue: mockCookieService.Object }]
+  });
 });
 
 ```
