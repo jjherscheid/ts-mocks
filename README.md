@@ -28,7 +28,7 @@ class MockCookieService {
 
 ```
 
-The Mock class in then used directly or injected by the TestBase.configureTestingModule method.
+The Mock class is used directly or injected by the TestBase.configureTestingModule method.
 
 ```javascript
 
