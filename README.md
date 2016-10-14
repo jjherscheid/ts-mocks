@@ -15,7 +15,8 @@ Jasmine Spy is automatically created during setup method
 
 ## Why?
 
-When creating Unit Tests with Typescript / Angular most of the examples use a Mock object created your self like:
+When creating Unit Tests with Typescript / Angular most of the examples on the internet use a Mock class that must be
+created. A Mock class looks like this:
 
 ```javascript
 
@@ -27,7 +28,7 @@ class MockCookieService {
 
 ```
 
-The Mock class in then used directly or injected by the addProviders method
+The Mock class in then used directly or injected by the TestBase.configureTestingModule method.
 
 ```javascript
 
@@ -49,13 +50,16 @@ beforeEach(inject([ ..., CookieService], (... , _cookieService: CookieService) =
 ```
 
 This works 'Okay' but there is no real intellisense for you when you are mocking your objects.  
-With this framework it is possible to create Mock objects with intellisense and possibility to
+This Mock class must have the same methods as the class to Mock otherwise your test will not work. First time
+creation is not so hard, but when you original class changes you have to change all the Mock classes aswell, but there
+is intellisense for this. With this framework it is possible to create Mock objects with intellisense and possibility to
 override methods during your tests.
 
 ```javascript
 
 // Create a variable for the Mock<T> class
 let mockCookiesService: Mock<CookieService>;
+let cookieService: CookieService;
 
 // NOTE: Change the useClass to useValue and use the 
 
@@ -63,15 +67,59 @@ beforeEach(() => {
   // Create new version every test
   mockCookieService = new Mock<CookieService>();
   
-  // Setup defaults
-  mockCookieService.setup(ls => ls.get);
+  // Setup defaults with override
+  mockCookieService.setup(ls => ls.get).is((key) => `customized-${key}`);
+
+  // Setup with default null return value 
   mockCookieService.setup(ls => ls.put); 
+
+  // Set the service intannce
+  cookieService = mockCookieService.Object;
 
   TestBed.configureTestingModule({
     ...
-    providers: [{ provide: CookieService, useValue: mockCookieService.Object }]
+    providers: [{ provide: CookieService, useValue: cookieService }]
   });
 });
+
+```
+
+You don't need to use the TestBed setup if you don't want to. Creating Mocks is not related
+to the TestBed. The following is also possible:
+
+```javascript
+
+let sut: MyOwnService;
+
+beforeEach(() => {
+  // Create new version every test
+  mockCookieService = new Mock<CookieService>();
+  
+  // Setup defaults with override
+  mockCookieService.setup(ls => ls.get).is((key) => `customized-${key}`);
+
+  // Setup with default null return value 
+  mockCookieService.setup(ls => ls.put); 
+
+  // Set the service intannce
+  cookieService = mockCookieService.Object;
+
+  sut = new MyOwnService(cookieService);
+});
+
+```
+
+Basically there are two properties and methods on typscript object that you can Mock like so:
+
+```javascript
+
+  // Property mocking, where someValue must be of the same type as the property
+  mockService.setup(ms => ms.someProperty).is(someValue); 
+
+  // Method mocking, where the is() defines the new body of the method
+  mockService.setup(ms => ms.someMethod).is((arguments) => {
+    // mocked implementation
+  });
 
 ```
 
@@ -85,7 +133,7 @@ it('using with default setup from beforeEach', () => {
 });
 
 it('setup different value in test', () => {
-  mockCookieService.setup(ls => ls.get).is(key => 'TestValue');
+  mockCookieService.setup(ls => ls.get).is((key) => 'TestValue');
   
   let r = sut.getValue('Test');
   expect(r).toEqual('TestValue');
@@ -96,7 +144,7 @@ it('setup different value in test', () => {
 ```
 
 If you need to change the spy during your unit test you can use the Spy object returned
-by the setup() / is() methods
+by the setup() / is() methods. But most of the unit test do not need the spy directly.
 
 ```javascript
 
