@@ -9,7 +9,7 @@ Jasmine Spy is automatically created during setup method
 
   // Mock for the CookieService from angular2-cookie
   mockCookieService = new Mock<CookieService>();
-  mockCookieService.setup(ls => ls.get);
+  mockCookieService.setup(ls => ls.get).is((key) => `customized ${key}`);
   mockCookieService.setup(ls => ls.put); 
 ```
 
