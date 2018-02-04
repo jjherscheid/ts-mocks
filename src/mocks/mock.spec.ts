@@ -42,6 +42,13 @@ describe('Mock', () => {
       mock.Object.fighters();
       expect(mock.Object.fighters).toHaveBeenCalled();
     });
+
+    it('should have no prob extending an already mocked method', () => {
+      const mock = new Mock<Foo>({ fighters: () => true }).extend({ fighters: () => false })
+
+      expect(mock.Object.fighters()).toBeFalsy();
+      expect(mock.Object.fighters).toHaveBeenCalled();
+    });
   });
 
   it('should not break the pre-existing API', () => {
