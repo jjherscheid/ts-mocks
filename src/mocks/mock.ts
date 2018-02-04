@@ -10,13 +10,23 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
-    constructor(obj: T = <T>{}) {
-        this._object = obj;
+    constructor(object: Partial<{ [ key in keyof T ]: T[key] }> = {}) {
+      this.extend(object);
     }
 
     /** Return the mocked object */
     public get Object(): T {
         return <T>this._object;
+    }
+
+    public extend(object: Partial<{ [ key in keyof T ]: T[key] }> = {}): this {
+      Object.keys(object).forEach((key) => {
+        if (typeof object[key] === 'function') {
+          spyOn(object, key as keyof T).and.callThrough();
+        }
+      });
+      Object.assign(this._object, object);
+      return this;
     }
 
     public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
