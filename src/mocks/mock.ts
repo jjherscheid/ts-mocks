@@ -5,7 +5,7 @@ export class Mock<T> {
 
     private _object: T = <T>{};
     private originalPropertyValues: any[] = [];
-    
+
     /** Create mock from a Type */
     public static of<T>(type: { new (): T }): Mock<T> {
         return new Mock<T>(new type());
@@ -24,6 +24,5 @@ export class Mock<T> {
         let propertyName = value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
 
         return new Setup(this._object, propertyName);
-    }       
+    }
 }
-
