@@ -10,7 +10,7 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
-    constructor(object: Partial<{ [ key in keyof T ]: T[key] }> = {}) {
+    constructor(object: Partial<T> = {}) {
       this.extend(object);
     }
 
@@ -19,7 +19,7 @@ export class Mock<T> {
         return <T>this._object;
     }
 
-    public extend(object: Partial<{ [ key in keyof T ]: T[key] }> = {}): this {
+    public extend(object: Partial<T> = {}): this {
       Object.keys(object).forEach((key) => {
         if (typeof object[key] === 'function') {
           spyOn(object, key as keyof T).and.callThrough();
