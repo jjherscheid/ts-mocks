@@ -34,7 +34,6 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-typescript": "^3.0.9",
-    "rimraf": "^2.5.4",
     "ts-node": "^4.1.0",
     "typescript": "2.6.x"
   }
