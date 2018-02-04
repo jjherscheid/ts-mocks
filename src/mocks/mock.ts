@@ -4,7 +4,6 @@ import { Setup } from './setup';
 export class Mock<T> {
 
     private _object: T = <T>{};
-    private originalPropertyValues: any[] = [];
 
     /** Create mock from a Type */
     public static of<T>(type: { new (): T }): Mock<T> {
