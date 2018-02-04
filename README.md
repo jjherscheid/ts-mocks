@@ -160,3 +160,13 @@ it('override spy during test', () => {
 });
 
 ```
+
+You can now contruct an object providing a partial implementation of the generic type
+and then extend the mock afterwards.
+
+```javascript
+
+    const mockCookieService = new Mock<CookieService>({ get: (key) => `customized ${key}`, put: () => null });
+    mockCookieService.extend({ put: () => 'not null' });
+
+```
