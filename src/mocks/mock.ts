@@ -6,7 +6,7 @@ const FUNCTION_STRING = 'function';
 export class Mock<T> {
 
     public static ANY_FUNC = () => undefined;
-    
+
     private _object: T = <T>{};
 
     /** Create mock from a Type */
@@ -14,7 +14,7 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
-    constructor(object: Partial<T> = {}) {
+    constructor(object: Partial<{ [ key in keyof T ]: T[key] }> = {}) {
       this.extend(object);
     }
 
@@ -24,7 +24,7 @@ export class Mock<T> {
     }
 
     /** Extend the current mock object with implementation */
-    public extend(object: Partial<T> = {}): this {
+    public extend(object: Partial<{ [ key in keyof T ]: T[key] }> = {}): this {
       Object.keys(object).forEach((key) => {
         if (typeof object[key] === FUNCTION_STRING) {
           try {
