@@ -9,6 +9,7 @@
     "exclude": [
         "node_modules",
         "lib",
-        "*.spec.ts"
+        "**/*.spec.ts",
+        "**/*.conf.ts"
     ]
 }

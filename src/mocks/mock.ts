@@ -1,8 +1,12 @@
 import { Setup } from './setup';
 
+const FUNCTION_STRING = 'function';
+
 /** Class for mocking objects/interfaces in Typescript */
 export class Mock<T> {
 
+    public static ANY_FUNC = () => undefined;
+    
     private _object: T = <T>{};
 
     /** Create mock from a Type */
@@ -19,9 +23,10 @@ export class Mock<T> {
         return <T>this._object;
     }
 
+    /** Extend the current mock object with implementation */
     public extend(object: Partial<T> = {}): this {
       Object.keys(object).forEach((key) => {
-        if (typeof object[key] === 'function') {
+        if (typeof object[key] === FUNCTION_STRING) {
           try {
             spyOn(object, key as keyof T).and.callThrough();
           } catch (e) {
@@ -33,6 +38,7 @@ export class Mock<T> {
       return this;
     }
 
+    /** Setup a property or a method with using lambda style settings */
     public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
         let propertyName = value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
 

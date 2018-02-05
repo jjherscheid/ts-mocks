@@ -1,6 +1,5 @@
 import Spy = jasmine.Spy;
 
-const UNDEFINED_STRING = 'undefined';
 const FUNCTION_STRING = 'function';
 
 export class Setup<T, TReturn> {
@@ -27,11 +26,5 @@ export class Setup<T, TReturn> {
             this.spy = spyOn(this.object, this.key as keyof T).and.callThrough();
         }
         return this;
-    }
-
-    /** deprecated use is() */
-    public returns(value: TReturn) {
-        console.warn('returns() is being deprecated, use is()')
-        this.is(value);
-    }
+    }    
 }
