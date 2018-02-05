@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
         "declaration": true,
-        "outDir": "lib"
+        "outDir": "lib",
+        "sourceMap": true
     },
     "exclude": [
         "node_modules",
         "lib",
-        "*.spec.ts"
+        "**/*.spec.ts",
+        "**/*.conf.ts"
     ]
 }

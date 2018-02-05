@@ -1,16 +1,39 @@
 # Typescript Mocking Framework
 
-Create Mock objects for Typescript Classes and Interfaces  
+Create Mock objects for Typescript Classes and Interfaces
 Jasmine Spy is automatically created during setup method
 
 **Example**:
 
+Initializing and setting up a new Mock object can be done in several ways:
+
 ```javascript
 
-  // Mock for the CookieService from angular2-cookie
+  // 1. Use the new constructor with Partial<T> which is great
+  //    because you can use an object with all the setup you want
+  mockCookieService = new Mock<CookieService>({ get: (key) => `customized ${key}`});
+  
+  // 2. Use the new 'extend()' method with Partial<T>.
+  //    With the extend method it is possible to override settings during tests
   mockCookieService = new Mock<CookieService>();
+  mockCookieService.extend({ get: (key) => `customized ${key}`})
+ 
+  // 3. Use the already existing 'setup()' method.
+  //    The setup method is great for properties or methods that should be availble
+  //    during you test, but do not need an implementation for the test to run.
+  mockCookieService = new Mock<CookieService>();
+  mockCookieService.setup(ls => ls.put);
+
+  // The above scenario is also possible with the contructor or extend using the Mock.ANY_FUNC
+  mockCookieService = new Mock<CookieService>({ put: Mock.ANY_FUNC});
+  // or
+  mockCookieService.extend({ put: Mock.ANY_FUNC}); 
+
+  // when using the setup method it is still possible to define the implementation
+  // with both 'is()' method as the extend method
   mockCookieService.setup(ls => ls.get).is((key) => `customized ${key}`);
-  mockCookieService.setup(ls => ls.put); 
+  mockCookieService.extend({ get: (key) => `customized ${key}`});
+ 
 ```
 
 ## Why?
@@ -49,7 +72,7 @@ beforeEach(inject([ ..., CookieService], (... , _cookieService: CookieService) =
 }));
 ```
 
-This works 'Okay' but there is no real intellisense for you when you are mocking your objects.  
+This works 'Okay' but there is no real intellisense for you when you are mocking your objects.
 This Mock class must have the same methods as the class to Mock otherwise your test will not work. First time
 creation is not so hard, but when you original class changes you have to change all the Mock classes aswell, but there
 is intellisense for this. With this framework it is possible to create Mock objects with intellisense and possibility to
@@ -61,18 +84,15 @@ override methods during your tests.
 let mockCookiesService: Mock<CookieService>;
 let cookieService: CookieService;
 
-// NOTE: Change the useClass to useValue and use the 
+// NOTE: Change the useClass to useValue and use the
 
 beforeEach(() => {
-  // Create new version every test
-  mockCookieService = new Mock<CookieService>();
+  // Create new version every test using the new constructor
+  mockCookieService = new Mock<CookieService>({
+    get: (key) => `customized-${key}`,    // Default setup of method
+    put: Mock.ANY_FUNC                    // Returns undefined as value
+  });
   
-  // Setup defaults with override
-  mockCookieService.setup(ls => ls.get).is((key) => `customized-${key}`);
-
-  // Setup with default null return value 
-  mockCookieService.setup(ls => ls.put); 
-
   // Set the service intannce
   cookieService = mockCookieService.Object;
 
@@ -92,14 +112,11 @@ to the TestBed. The following is also possible:
 let sut: MyOwnService;
 
 beforeEach(() => {
-  // Create new version every test
-  mockCookieService = new Mock<CookieService>();
-  
-  // Setup defaults with override
-  mockCookieService.setup(ls => ls.get).is((key) => `customized-${key}`);
-
-  // Setup with default null return value 
-  mockCookieService.setup(ls => ls.put); 
+  // Create new version every test using the new constructor
+  mockCookieService = new Mock<CookieService>({
+    get: (key) => `customized-${key}`,    // Default setup of method
+    put: Mock.ANY_FUNC                    // Returns undefined as value
+  });
 
   // Set the service intannce
   cookieService = mockCookieService.Object;
@@ -109,21 +126,7 @@ beforeEach(() => {
 
 ```
 
-Basically there are two properties and methods on typscript object that you can Mock like so:
-
-```javascript
-
-  // Property mocking, where someValue must be of the same type as the property
-  mockService.setup(ms => ms.someProperty).is(someValue); 
-
-  // Method mocking, where the is() defines the new body of the method
-  mockService.setup(ms => ms.someMethod).is((arguments) => {
-    // mocked implementation
-  });
-
-```
-
-In your test you can define other behavior using the 'setup' method of the Mock<T>
+In your test you can define other behavior using the 'extend' method of the Mock<T>
 
 ```javascript
 
@@ -133,8 +136,8 @@ it('using with default setup from beforeEach', () => {
 });
 
 it('setup different value in test', () => {
-  mockCookieService.setup(ls => ls.get).is((key) => 'TestValue');
-  
+  mockCookieService.extend({ get : (key) => 'TestValue'});
+
   let r = sut.getValue('Test');
   expect(r).toEqual('TestValue');
   expect(cookieService.get).toHaveBeenCalled();
@@ -151,7 +154,7 @@ by the setup() / is() methods. But most of the unit test do not need the spy dir
 it('override spy during test', () => {
     let getMethodSetup = mockCookieService.setup(ls => ls.get).is(key => 'TestValue');
     let getMethodSpy = getMethodSetup.Spy;
-  
+
     let r = sut.getValue('Test');
     expect(r).toEqual('TestValue');
     expect(cookieService.get).toHaveBeenCalled();
