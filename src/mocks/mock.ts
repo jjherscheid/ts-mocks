@@ -14,7 +14,7 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
-    constructor(object: Partial<{ [ key in keyof T ]: T[key] }> = {}) {
+    constructor(object: Partial<{ [ key in keyof T ]: T[key] }> | T = <T>{}) {
       this.extend(object);
     }
 
@@ -24,7 +24,7 @@ export class Mock<T> {
     }
 
     /** Extend the current mock object with implementation */
-    public extend(object: Partial<{ [ key in keyof T ]: T[key] }> = {}): this {
+    public extend(object: Partial<{ [ key in keyof T ]: T[key] }>): this {
       Object.keys(object).forEach((key) => {
         if (typeof object[key] === FUNCTION_STRING) {
           try {

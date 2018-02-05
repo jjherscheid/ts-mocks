@@ -35,12 +35,6 @@ describe('Mock', () => {
       expect(() => new Mock<Foo>(mock.Object)).not.toThrowError();
     });
 
-    // testing this scenario:
-    // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
-    it('should allow type inference with private members', () => {
-      const foo = new Foo();
-      const mock = new Mock(foo);
-    });
   });
 
   describe('extend', () => {
@@ -158,5 +152,14 @@ describe('Mock', () => {
     expect(mock.Object.fighters()).toBeUndefined();
     expect(mock.Object.fightersWithParams('test')).toBeUndefined();
     expect(mock.Object.fightersVoid(1)).toBeUndefined();
+  });
+
+  // testing this scenario:
+  // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
+  it('should allow type inference with private members', () => {
+    const foo = new Foo();
+    const mock = new Mock(foo);
+
+    mock.setup(m => m.fighters).is(() => false);
   });
 });
