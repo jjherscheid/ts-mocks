@@ -15,6 +15,7 @@ export class Mock<T> {
     }
 
     constructor(object: Partial<{ [ key in keyof T ]: T[key] }> | T = <T>{}) {
+      this._object = object as T;
       this.extend(object);
     }
 
