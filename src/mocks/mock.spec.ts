@@ -23,6 +23,12 @@ describe('Mock', () => {
       mock.Object.fighters();
       expect(mock.Object.fighters).toHaveBeenCalled();
     });
+
+    it('should not error if trying to spy on a function that already has a spy', () => {
+      const mock = new Mock<Foo>({ fighters: () => false })
+
+      expect(() => new Mock<Foo>(mock.Object)).not.toThrowError();
+    });
   });
 
   describe('extend', () => {

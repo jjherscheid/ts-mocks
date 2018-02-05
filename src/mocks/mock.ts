@@ -22,7 +22,11 @@ export class Mock<T> {
     public extend(object: Partial<T> = {}): this {
       Object.keys(object).forEach((key) => {
         if (typeof object[key] === 'function') {
-          spyOn(object, key as keyof T).and.callThrough();
+          try {
+            spyOn(object, key as keyof T).and.callThrough();
+          } catch (e) {
+            // noop: the function is already spied on
+          }
         }
       });
       Object.assign(this._object, object);
