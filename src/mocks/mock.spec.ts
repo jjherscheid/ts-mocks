@@ -1,6 +1,7 @@
 import { Mock } from './mock';
 
 class Foo {
+  private bah = 'hi';
   bar = ':-P';
   fighters = () => true;
   fightersWithParams = (par: string) => par;
@@ -32,6 +33,13 @@ describe('Mock', () => {
       const mock = new Mock<Foo>({ fighters: () => false });
 
       expect(() => new Mock<Foo>(mock.Object)).not.toThrowError();
+    });
+
+    // testing this scenario:
+    // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
+    it('should allow type inference with private members', () => {
+      const foo = new Foo();
+      const mock = new Mock(foo);
     });
   });
 
