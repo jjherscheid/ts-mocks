@@ -1,6 +1,7 @@
 import { Mock } from './mock';
 
 class Foo {
+  private bah = 'hi';
   bar = ':-P';
   fighters = () => true;
   fightersWithParams = (par: string) => par;
@@ -33,6 +34,7 @@ describe('Mock', () => {
 
       expect(() => new Mock<Foo>(mock.Object)).not.toThrowError();
     });
+
   });
 
   describe('extend', () => {
@@ -127,19 +129,22 @@ describe('Mock', () => {
     mock.setup(f => f.bar).is('someValue');
 
     expect(mock.Object.fighters()).toBeFalsy();
-    expect(mock.Object.bar).toEqual('someValue');    
+    expect(mock.Object.bar).toEqual('someValue');
   });
 
   it('should be able only spy a method with setup', () => {
-    const mock = new Mock<Foo>();
+    const bah = {} as Foo;
+    const mock = new Mock<Foo>(bah);
 
-    mock.setup(f => f.fighters);
+    mock.setup(x => x.fighters).is(Mock.ANY_FUNC);
 
-    expect(mock.Object.fighters()).toBeUndefined();
+    expect(bah.fighters()).toBeUndefined();
+    expect(bah.fighters).toHaveBeenCalled();
   });
 
   it('should be able only spy a method with extend', () => {
-    const mock = new Mock<Foo>();
+    const bah = {} as Foo;
+    const mock = new Mock<Foo>(bah);
 
     mock.extend({
       fighters: Mock.ANY_FUNC,
@@ -147,8 +152,18 @@ describe('Mock', () => {
       fightersVoid: Mock.ANY_FUNC
     });
 
-    expect(mock.Object.fighters()).toBeUndefined();
-    expect(mock.Object.fightersWithParams('test')).toBeUndefined();
-    expect(mock.Object.fightersVoid(1)).toBeUndefined();
+    expect(bah.fighters()).toBeUndefined();
+    expect(bah.fighters).toHaveBeenCalled();
+    expect(bah.fightersWithParams('test')).toBeUndefined();
+    expect(bah.fightersVoid(1)).toBeUndefined();
+  });
+
+  // testing this scenario:
+  // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
+  it('should allow type inference with private members', () => {
+    const foo = new Foo();
+    const mock = new Mock(foo);
+
+    mock.setup(m => m.fighters).is(() => false);
   });
 });
