@@ -31,8 +31,14 @@ Initializing and setting up a new Mock object can be done in several ways:
 
   // when using the setup method it is still possible to define the implementation
   // with both 'is()' method as the extend method
-  mockCookieService.setup(ls => ls.get).is((key) => `customized ${key}`);
+  mockCookieService.setup(cs => cs.get).is((key) => `customized ${key}`);
   mockCookieService.extend({ get: (key) => `customized ${key}`});
+
+  // You can also chain setup/is combinations like
+  mockCookieService
+      .setup(cs => cs.get).is((key) => `customized ${key}`)
+      .setup(cs => cs.put).is((key) => { /* do something */ });
+  
  
 ```
 
