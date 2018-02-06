@@ -1,17 +1,16 @@
+import { Mock } from './mock';
 import Spy = jasmine.Spy;
-
-const FUNCTION_STRING = 'function';
 
 export class Setup<T, TReturn> {
 
     private spy: Spy;
 
     constructor(
-        private object: T,
-        private key: string
+        private mock: Mock<T>,
+        private key: string,
     ) {
-        this.object[key] = <T>{};
-        this.spy = spyOn(this.object, key as keyof T);
+        mock.Object[key] = <T>{};
+        this.spy = spyOn(mock.Object, key as keyof T);
     }
 
     public get Spy() {
@@ -19,12 +18,11 @@ export class Setup<T, TReturn> {
     }
 
     /** Setup the return value for the setup of the property */
-    public is(value: TReturn) : Setup<T, TReturn> {
-
-        this.object[this.key] = value;
-        if(typeof(value) === FUNCTION_STRING) {
-            this.spy = spyOn(this.object, this.key as keyof T).and.callThrough();
+    public is(value: TReturn) : Mock<T> {
+        this.mock.Object[this.key] = value;
+        if(typeof(value) === 'function') {
+            this.spy = spyOn(this.mock.Object, this.key as keyof T).and.callThrough();
         }
-        return this;
-    }    
+        return this.mock;
+    }
 }
