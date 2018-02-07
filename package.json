@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
   "author": {
     "name": "Johan Herscheid <johanherscheid@gmail.com>"
