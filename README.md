@@ -1,7 +1,7 @@
 # Typescript Mocking Framework
 
-Create Mock objects for Typescript Classes and Interfaces
-Jasmine Spy is automatically created during setup method
+Create **Type-Safe** Mock objects for Typescript Classes and Interfaces
+Jasmine Spy is automatically created when mocking a method so it is still possible to use verification methods like toHaveBeenCalled().
 
 # Changes
 
@@ -85,8 +85,8 @@ beforeEach(inject([ ..., CookieService], (... , _cookieService: CookieService) =
 This works 'Okay' but there is no real intellisense for you when you are mocking your objects.
 This Mock class must have the same methods as the class to Mock otherwise your test will not work. First time
 creation is not so hard, but when you original class changes you have to change all the Mock classes aswell, but there
-is intellisense for this. With this framework it is possible to create Mock objects with intellisense and possibility to
-override methods during your tests.
+is no intellisense for this. With this framework it is possible to create Mock objects with intellisense and possibility to
+override methods during your tests and even by type-safe!!!
 
 ```javascript
 
@@ -136,7 +136,7 @@ beforeEach(() => {
 
 ```
 
-In your test you can define other behavior using the 'extend' method of the Mock<T>
+In your test you can define other behavior using the 'extend' method of the Mock<T> or using the 'setup' and 'is' methods.
 
 ```javascript
 
@@ -154,9 +154,35 @@ it('setup different value in test', () => {
 
 });
 
+it('setup other value in test', () => {
+  mockCookieService.setup(cs => cs.get).is((key) => 'TestValue');
+
+  let r = sut.getValue('Test');
+  expect(r).toEqual('TestValue');
+  expect(cookieService.get).toHaveBeenCalled();
+
+});
+
 ```
 
-If you need to change the spy during your unit test you can use the Spy object returned by the spyOf() method. But most of the unit test do not need the spy directly.
+Every method that is mocked using 'extend' or 'setup' is automatically spied using jasmine.Spy. So it is possible to use 'expect().toHaveBeenCalled' methods etc. Therefor it is not needed any more to use the jasmine.Spy object directly for mocking behavior.
+ts-mocks helps you to be type-safe (so use that ;-))
+
+```javascript
+
+it('check if methods has been called', () => {
+  mockCookieService.extend({ get: (key) => 'TestValue'});
+  var cookiesService = mockCookieService.Object;
+  
+  sut.getValue('Test');
+  
+  expect(cookieService.get).toHaveBeenCalled();
+});
+
+```
+
+If for some reason you still want the original jasmine.Spy object (just Don't ;-)).
+You can use the spyOf() method of the mock. Be aware that you type-safety is gone.
 
 ```javascript
 
