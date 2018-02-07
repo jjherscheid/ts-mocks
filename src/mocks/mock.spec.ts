@@ -102,16 +102,6 @@ describe('Mock', () => {
     expect(mock.Object.bar).toEqual('someValue');
   });
 
-  it('should allow setup chaining', () => {
-    const mock = new Mock<Foo>();
-
-    mock.setup(f => f.fighters).is(() => false)
-        .setup(f => f.bar).is('someValue');
-
-    expect(mock.Object.fighters()).toBeFalsy();
-    expect(mock.Object.bar).toEqual('someValue');
-  });
-
   it('should be able to mix extend and setup methods', () => {
     const mock = new Mock<Foo>();
 
