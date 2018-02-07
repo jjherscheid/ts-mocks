@@ -3,6 +3,10 @@
 Create Mock objects for Typescript Classes and Interfaces
 Jasmine Spy is automatically created during setup method
 
+# Changes
+
+**1.0 => 2.0** Has breaking change in API. But that's only if you used the .Spy properties of the setup() and is() methods
+
 **Example**:
 
 Initializing and setting up a new Mock object can be done in several ways:
@@ -152,14 +156,13 @@ it('setup different value in test', () => {
 
 ```
 
-If you need to change the spy during your unit test you can use the Spy object returned
-by the setup() / is() methods. But most of the unit test do not need the spy directly.
+If you need to change the spy during your unit test you can use the Spy object returned by the spyOf() method. But most of the unit test do not need the spy directly.
 
 ```javascript
 
 it('override spy during test', () => {
-    let getMethodSetup = mockCookieService.setup(ls => ls.get).is(key => 'TestValue');
-    let getMethodSpy = getMethodSetup.Spy;
+    let getMethodSetup = mockCookieService.setup(cs => cs.get).is(key => 'TestValue');
+    let getMethodSpy = mockCookieService.spyOf(cs => cs.get);
 
     let r = sut.getValue('Test');
     expect(r).toEqual('TestValue');
