@@ -6,6 +6,11 @@ export class Mock<T> {
     public static ANY_FUNC = () => undefined;
 
     private _object: T = <T>{};
+    private _setup?: Setup<T, any>;
+
+    get Spy() {
+      return this._setup && this._setup.Spy;
+    }
 
     /** Create mock from a Type */
     public static of<T>(type: { new (): T }): Mock<T> {
@@ -41,6 +46,7 @@ export class Mock<T> {
     public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
         const propertyName = value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
 
-        return new Setup(this, propertyName);
+        this._setup = new Setup(this, propertyName);
+        return this._setup;
     }
 }

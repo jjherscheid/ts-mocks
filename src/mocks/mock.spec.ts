@@ -152,6 +152,18 @@ describe('Mock', () => {
     expect(bah.fighters).toHaveBeenCalled();
   });
 
+  it('should return an undefined spy if there was no setup', () => {
+    expect(new Mock<Foo>().Spy).toBeUndefined();
+  });
+
+  it('should allow you to get the spy off of a setup function', () => {
+    const mock = new Mock<Foo>();
+    const spy = mock.setup(x => x.fighters).is(Mock.ANY_FUNC).Spy;
+
+    mock.Object.fighters();
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('should be able only spy a method with extend', () => {
     const bah = {} as Foo;
     const mock = new Mock<Foo>(bah);
