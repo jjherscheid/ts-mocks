@@ -18,11 +18,11 @@ export class Setup<T, TReturn> {
     }
 
     /** Setup the return value for the setup of the property */
-    public is(value: TReturn) : Setup<T, TReturn> {
+    public is(value: TReturn) : Mock<T> {
         this.mock.Object[this.key] = value;
         if(typeof(value) === 'function') {
             this.spy = spyOn(this.mock.Object, this.key as keyof T).and.callThrough();
         }
-        return this;
+        return this.mock;
     }
 }
