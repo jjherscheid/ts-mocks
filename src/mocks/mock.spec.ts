@@ -9,6 +9,9 @@ class Foo {
     fightersVoid = (i: number): void => {
         // do something with i
     };
+    static bar(): string {
+        throw new Error();
+    }
 }
 
 describe('Mock', () => {
@@ -41,6 +44,24 @@ describe('Mock', () => {
 
             expect(mock.Object.fighters()).toBeUndefined();
             expect(mock.Object.fighters).toHaveBeenCalled();
+        });
+    });
+
+    describe('static', () => {
+        it('should not call the underlying implememtation', () => {
+            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+            expect(() => { Foo.bar(); }).not.toThrow();
+        });
+
+        it('should call fake', () => {
+            Mock.static(Foo, 'bar', () => 'hi');
+            expect(Foo.bar()).toEqual('hi');
+        });
+
+        it('should be a spy', () => {
+            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+            Foo.bar();
+            expect(Foo.bar).toHaveBeenCalled();
         });
     });
 

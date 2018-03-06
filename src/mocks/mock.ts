@@ -14,6 +14,10 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
+    public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K]): void {
+        spyOn(obj, key).and.callFake(stub as any);
+    }
+
     private _object: T = <T>{};
     private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
