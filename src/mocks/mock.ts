@@ -3,8 +3,8 @@ import { Setup } from './setup';
 /** Class for mocking objects/interfaces in Typescript */
 export class Mock<T> {
 
-    /** 
-     * Can be used to define empty methods when using extend 
+    /**
+     * Can be used to define empty methods when using extend
      * mock.extend({ someMethod: Mock.ANY_FUNC });
     */
     public static ANY_FUNC = () => undefined;
@@ -15,7 +15,7 @@ export class Mock<T> {
     }
 
     private _object: T = <T>{};
-    private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();    
+    private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
     constructor(object: Partial<{[key in keyof T]: T[key]}> | T = <T>{}) {
         this._object = object as T;
@@ -58,7 +58,7 @@ export class Mock<T> {
 
     /** Get the spy of method or property that has be
      *  set with extend of setup/is
-     *  REMARK: 
+     *  REMARK:
      */
     public spyOf<TProp>(value: (obj: T) => TProp): jasmine.Spy {
         const propertyName = this.getPropertyName(value);

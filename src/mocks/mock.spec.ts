@@ -110,13 +110,13 @@ describe('Mock', () => {
         it('should be able to use Mock.ANY_FUNC on different types of method interfaces', () => {
             const bah = {} as Foo;
             const mock = new Mock<Foo>(bah);
-    
+
             mock.extend({
                 fighters: Mock.ANY_FUNC,
                 fightersWithParams: Mock.ANY_FUNC,
                 fightersVoid: Mock.ANY_FUNC
             });
-    
+
             expect(bah.fighters()).toBeUndefined();
             expect(bah.fighters).toHaveBeenCalled();
             expect(bah.fightersWithParams('test')).toBeUndefined();
@@ -130,7 +130,7 @@ describe('Mock', () => {
                 const mock = new Mock<Foo>();
                 mock.setup(f => f.fighters);
                 expect(mock.Object.fighters()).toBeUndefined();
-            });            
+            });
         });
 
         describe('with is()', () => {
@@ -202,19 +202,19 @@ describe('Mock', () => {
 
             it('should return undefined if using the Mock.ANY_FUNC', () => {
                 const mock = new Mock<Foo>();
-    
+
                 mock.setup(f => f.fighters).is(Mock.ANY_FUNC);
-    
+
                 expect(mock.Object.fighters()).toBeUndefined();
                 expect(mock.Object.fighters).toHaveBeenCalled();
             });
 
             it('should allow setup/is chaining', () => {
                 const mock = new Mock<Foo>();
-        
+
                 mock.setup(f => f.fighters).is(() => false)
                     .setup(f => f.bar).is('someValue');
-        
+
                 expect(mock.Object.fighters()).toBeFalsy();
                 expect(mock.Object.bar).toEqual('someValue');
             });
@@ -224,30 +224,30 @@ describe('Mock', () => {
     describe('mixing extend and setup', () => {
         it('should still work when using setup first', () => {
             const mock = new Mock<Foo>();
-    
+
             mock.setup(f => f.fighters).is(() => false);
             mock.setup(f => f.bar).is('someValue');
-    
+
             expect(mock.Object.fighters()).toBeFalsy();
             expect(mock.Object.bar).toEqual('someValue');
-    
+
             mock.extend({ fighters: () => true, bar: 'someOtherValue' });
-    
+
             expect(mock.Object.fighters()).toBeTruthy();
             expect(mock.Object.bar).toEqual('someOtherValue');
         });
 
         it('should still work when using extend first', () => {
             const mock = new Mock<Foo>();
-    
+
             mock.extend({ fighters: () => true, bar: 'someOtherValue' });
-    
+
             expect(mock.Object.fighters()).toBeTruthy();
             expect(mock.Object.bar).toEqual('someOtherValue');
-    
+
             mock.setup(f => f.fighters).is(() => false);
             mock.setup(f => f.bar).is('someValue');
-    
+
             expect(mock.Object.fighters()).toBeFalsy();
             expect(mock.Object.bar).toEqual('someValue');
         });
@@ -258,21 +258,21 @@ describe('Mock', () => {
         it('should return undefined if no setup found for method', () => {
             const mock = new Mock<Foo>();
             const spy = mock.spyOf(x => x.fighters);
-            
+
             expect(spy).toBeUndefined();
         });
 
         it('should return undefined for properties without setup', () => {
             const mock = new Mock<Foo>();
             const spy = mock.spyOf(x => x.bar);
-            
+
             expect(spy).toBeUndefined();
         });
 
         it('should return undefined for properties with setup', () => {
             const mock = new Mock<Foo>({ bar: ';-)'});
             const spy = mock.spyOf(x => x.bar);
-            
+
             expect(spy).toBeUndefined();
         });
 
@@ -281,7 +281,7 @@ describe('Mock', () => {
                 const mock = new Mock<Foo>();
                 mock.setup(x => x.fighters).is(() => true);
                 const spy = mock.spyOf(x => x.fighters);
-        
+
                 expect(mock.Object.fighters()).toBeTruthy();
                 expect(spy).toHaveBeenCalled();
             });
@@ -291,18 +291,18 @@ describe('Mock', () => {
                 mock.setup(x => x.fighters).is(() => true);
                 mock.setup(x => x.fighters).is(() => false);
                 const spy = mock.spyOf(x => x.fighters);
-        
+
                 expect(mock.Object.fighters()).toBeFalsy();
                 expect(spy).toHaveBeenCalled();
             });
-        }); 
-        
+        });
+
         describe('with extend()', () => {
             it('should return the current spy of that function', () => {
                 const mock = new Mock<Foo>();
                 mock.extend({ fighters: () => true});
                 const spy = mock.spyOf(x => x.fighters);
-        
+
                 expect(mock.Object.fighters()).toBeTruthy();
                 expect(spy).toHaveBeenCalled();
             });
@@ -312,7 +312,7 @@ describe('Mock', () => {
                 mock.extend({ fighters: () => true});
                 mock.extend({ fighters: () => false});
                 const spy = mock.spyOf(x => x.fighters);
-        
+
                 expect(mock.Object.fighters()).toBeFalsy();
                 expect(spy).toHaveBeenCalled();
             });
@@ -322,7 +322,7 @@ describe('Mock', () => {
             it('should return the current spy of that function', () => {
                 const mock = new Mock<Foo>({ fighters: () => true});
                 const spy = mock.spyOf(x => x.fighters);
-        
+
                 expect(mock.Object.fighters()).toBeTruthy();
                 expect(spy).toHaveBeenCalled();
             });
@@ -333,9 +333,9 @@ describe('Mock', () => {
                 const mock = new Mock<Foo>({ fighters: () => true});
                 mock.setup(x => x.fighters).is(() => false);
                 mock.extend({ fighters: () => true});
-               
+
                 const spy = mock.spyOf(x => x.fighters);
-        
+
                 expect(mock.Object.fighters()).toBeTruthy();
                 expect(spy).toHaveBeenCalled();
             });
@@ -349,7 +349,7 @@ describe('Mock', () => {
         mock.Object.fighters();
         expect(spy).toHaveBeenCalled();
     });
-    
+
     // testing this scenario:
     // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
     it('should allow type inference with private members', () => {
