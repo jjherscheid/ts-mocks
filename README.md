@@ -43,6 +43,13 @@ Initializing and setting up a new Mock object can be done in several ways:
       .setup(cs => cs.get).is((key) => `customized ${key}`)
       .setup(cs => cs.put).is((key) => { /* do something */ });
   
+  // Mocking static methods is possible using the Mock.static method
+  // class Foo {
+  //   static bar(): string {
+  //     return 'bar';
+  //   }
+  // }
+  Mock.static(Foo, 'bar', () => 'some expected output');
  
 ```
 
