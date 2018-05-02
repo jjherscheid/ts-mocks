@@ -1,6 +1,10 @@
 import { Mock } from './mock';
 import { BADQUERY } from 'dns';
 
+interface Bar {
+  blah: string;
+  blurg: string;
+}
 class Foo {
     private bah = 'hi';
     bar = ':-P';
@@ -12,6 +16,7 @@ class Foo {
     static bar(): string {
         throw new Error();
     }
+    blah: Bar
 }
 
 describe('Mock', () => {
@@ -44,6 +49,12 @@ describe('Mock', () => {
 
             expect(mock.Object.fighters()).toBeUndefined();
             expect(mock.Object.fighters).toHaveBeenCalled();
+        });
+
+        it('should work with nested types', () => {
+            const mock = new Mock<Foo>({blah : {blurg : 'hi'}});
+
+            expect(mock.Object.blah.blurg).toEqual('hi');
         });
     });
 
@@ -142,6 +153,12 @@ describe('Mock', () => {
             expect(bah.fighters).toHaveBeenCalled();
             expect(bah.fightersWithParams('test')).toBeUndefined();
             expect(bah.fightersVoid(1)).toBeUndefined();
+        });
+
+        it('should work with nested types', () => {
+            const mock = new Mock<Foo>().extend({blah : {blurg : 'hi'}});
+
+            expect(mock.Object.blah.blurg).toEqual('hi');
         });
     });
 
