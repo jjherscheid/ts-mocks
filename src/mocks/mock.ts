@@ -1,5 +1,7 @@
 import { Setup } from './setup';
 
+export type RecursivePartial<T> = Partial<{ [key in keyof T]: RecursivePartial<T[key]> | T[key] }>;
+
 /** Class for mocking objects/interfaces in Typescript */
 export class Mock<T> {
 
@@ -21,7 +23,7 @@ export class Mock<T> {
     private _object: T = <T>{};
     private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
-    constructor(object: Partial<{[key in keyof T]: T[key]}> | T = <T>{}) {
+    constructor(object: RecursivePartial<T> | T = <T>{}) {
         this._object = object as T;
         this.extend(object);
     }
@@ -32,7 +34,7 @@ export class Mock<T> {
     }
 
     /** Extend the current mock object with implementation */
-    public extend(object: Partial<{[key in keyof T]: T[key]}>): this {
+    public extend(object: RecursivePartial<T>): this {
         Object.keys(object).forEach((key) => {
             if (typeof object[key] === 'function') {
                 try {
