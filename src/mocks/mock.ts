@@ -35,10 +35,10 @@ export class Mock<T> {
 
     /** Extend the current mock object with implementation */
     public extend(object: RecursivePartial<T>): this {
-        Object.keys(object).forEach((key) => {
+        Object.keys(object).forEach((key: keyof T) => {
             if (typeof object[key] === 'function') {
                 try {
-                    let spy = spyOn(object, key as keyof T).and.callThrough();
+                    let spy = spyOn(object, key).and.callThrough();
                     this._spies.set(key, () => spy);
                 } catch (e) {
                     // noop: the function is already spied on
