@@ -256,6 +256,16 @@ describe('Mock', () => {
                 expect(mock.Object.fighters()).toBeFalsy();
                 expect(mock.Object.bar).toEqual('someValue');
             });
+
+            it('should work with nested types', () => {
+                const mock = new Mock<Foo>();
+                const mockNested = new Mock<Bar>();
+
+                mockNested.setup(b => b.blurg).is('hi');
+                mock.setup(f => f.blah).is(mockNested.Object);
+
+                expect(mock.Object.blah.blurg).toEqual('hi');                
+            });
         });
     });
 
