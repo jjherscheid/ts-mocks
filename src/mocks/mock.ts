@@ -16,8 +16,10 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
-    public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K]): void {
-        spyOn(obj, key).and.callFake(stub as any);
+    public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K] & Function): void {
+        const spy = ((jasmine as any).isSpy(obj[key]) ? obj[key] : spyOn(obj, key)) as jasmine.Spy;
+        spy.calls.reset();
+        spy.and.callFake(stub);
     }
 
     private _object: T = <T>{};

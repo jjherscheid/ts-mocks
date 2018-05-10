@@ -74,6 +74,19 @@ describe('Mock', () => {
             Foo.bar();
             expect(Foo.bar).toHaveBeenCalled();
         });
+
+        it('should reset the call count', () => {
+            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+            Foo.bar();
+            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+            expect(Foo.bar).not.toHaveBeenCalled();
+        });
+
+        it('should overwrite spy fake', () => {
+            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+            Mock.static(Foo, 'bar', () => 'hi');
+            expect(Foo.bar()).toEqual('hi');
+        });
     });
 
     describe('using extend()', () => {
