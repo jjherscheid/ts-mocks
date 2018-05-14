@@ -16,8 +16,10 @@ export class Mock<T> {
         return new Mock<T>(new type());
     }
 
-    public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K]): void {
-        spyOn(obj, key).and.callFake(stub as any);
+    public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K] & Function): void {
+        const spy = ((jasmine as any).isSpy(obj[key]) ? obj[key] : spyOn(obj, key)) as jasmine.Spy;
+        spy.calls.reset();
+        spy.and.callFake(stub);
     }
 
     private _object: T = <T>{};
@@ -36,13 +38,9 @@ export class Mock<T> {
     /** Extend the current mock object with implementation */
     public extend(object: RecursivePartial<T>): this {
         Object.keys(object).forEach((key: keyof T) => {
-            if (typeof object[key] === 'function') {
-                try {
-                    let spy = spyOn(object, key).and.callThrough();
-                    this._spies.set(key, () => spy);
-                } catch (e) {
-                    // noop: the function is already spied on
-                }
+            if (typeof object[key] === 'function' && !(jasmine as any).isSpy(object[key])) {
+                const spy = spyOn(object, key).and.callThrough();
+                this._spies.set(key, () => spy);
             }
         });
         Object.assign(this._object, object);
