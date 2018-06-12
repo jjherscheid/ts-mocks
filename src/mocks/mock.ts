@@ -23,7 +23,6 @@ export class Mock<T> {
     }
 
     private _object: T = <T>{};
-    private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
     constructor(object: RecursivePartial<T> | T = <T>{}) {
         this._object = object as T;
@@ -39,8 +38,7 @@ export class Mock<T> {
     public extend(object: RecursivePartial<T>): this {
         Object.keys(object).forEach((key: keyof T) => {
             if (typeof object[key] === 'function' && !(jasmine as any).isSpy(object[key])) {
-                const spy = spyOn(object, key).and.callThrough();
-                this._spies.set(key, () => spy);
+                spyOn(object, key).and.callThrough();
             }
         });
         Object.assign(this._object, object);
@@ -51,25 +49,10 @@ export class Mock<T> {
     public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
         const propertyName = this.getPropertyName(value);
 
-        let setup = new Setup(this, propertyName);
-        this._spies.set(propertyName, () => setup.Spy);
-        return setup;
+        return new Setup(this, propertyName);
     }
 
     private getPropertyName<TProp>(value: (obj: T) => TProp): string {
         return value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
     }
-
-    /** Get the spy of method or property that has be
-     *  set with extend of setup/is
-     *  REMARK:
-     */
-    public spyOf<TProp>(value: (obj: T) => TProp): jasmine.Spy {
-        const propertyName = this.getPropertyName(value);
-        if (this._spies.has(propertyName)) {
-            return this._spies.get(propertyName)();
-        }
-        return undefined;
-    }
-
 }
