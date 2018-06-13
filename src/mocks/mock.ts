@@ -7,10 +7,13 @@ export type RecursivePartial<T> = Partial<{ [key in keyof T]: RecursivePartial<T
 
 /** Class for mocking objects/interfaces in Typescript */
 export class Mock<T> {
-    private static spyHelper: SpyHelper;
+    private static _spyHelper: SpyHelper;
 
-    public static configure(testFramework: 'jasmine' | 'jest') {
-        this.spyHelper = SpyHelperFactory.get(testFramework);
+    private static get spyHelper(): SpyHelper {
+        if(!this._spyHelper) {
+          this._spyHelper = SpyHelperFactory.get();
+        }
+        return this._spyHelper;
     }
 
     /**

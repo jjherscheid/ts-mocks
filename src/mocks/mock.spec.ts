@@ -1,5 +1,5 @@
 import { Mock } from './mock';
-import { BADQUERY } from 'dns';
+import { SpyDetector } from '../spy-detector';
 
 interface Bar {
   blah: string;
@@ -18,8 +18,6 @@ class Foo {
     }
     blah: Bar
 }
-
-Mock.configure(process.env.FRAMEWORK || 'jasmine' as any);
 
 describe('Mock', () => {
     describe('using constructor', () => {
@@ -77,7 +75,7 @@ describe('Mock', () => {
             expect(Foo.bar).toHaveBeenCalled();
         });
 
-        if ((window as any).__karma__) {
+        if (SpyDetector.detect() === 'jasmine') {
             it('should reset the call count', () => {
                 Mock.static(Foo, 'bar', Mock.ANY_FUNC);
                 Foo.bar();

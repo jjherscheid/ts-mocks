@@ -6,8 +6,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "test:jasmine": "FRAMEWORK=jasmine karma start",
-    "test:jest": "FRAMEWORK=jest jest",
+    "test:jasmine": "karma start",
+    "test:jest": "jest",
     "test": "npm run test:jasmine && npm run test:jest"
   },
   "keywords": [
