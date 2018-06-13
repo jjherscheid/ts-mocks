@@ -19,6 +19,8 @@ class Foo {
     blah: Bar
 }
 
+Mock.configure(process.env.FRAMEWORK || 'jasmine' as any);
+
 describe('Mock', () => {
     describe('using constructor', () => {
         it('should construct the mock object with the supplied property', () => {
@@ -75,12 +77,14 @@ describe('Mock', () => {
             expect(Foo.bar).toHaveBeenCalled();
         });
 
-        it('should reset the call count', () => {
-            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
-            Foo.bar();
-            Mock.static(Foo, 'bar', Mock.ANY_FUNC);
-            expect(Foo.bar).not.toHaveBeenCalled();
-        });
+        if ((window as any).__karma__) {
+            it('should reset the call count', () => {
+                Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+                Foo.bar();
+                Mock.static(Foo, 'bar', Mock.ANY_FUNC);
+                expect(Foo.bar).not.toHaveBeenCalled();
+            });
+        }
 
         it('should overwrite spy fake', () => {
             Mock.static(Foo, 'bar', Mock.ANY_FUNC);
@@ -173,161 +177,5 @@ describe('Mock', () => {
 
             expect(mock.Object.blah.blurg).toEqual('hi');
         });
-    });
-
-    describe('using setup()', () => {
-        describe('without is()', () => {
-            it('should return undefined for function if not using is', () => {
-                const mock = new Mock<Foo>();
-                mock.setup(f => f.fighters);
-                expect(mock.Object.fighters()).toBeUndefined();
-            });
-        });
-
-        describe('with is()', () => {
-            it('should extend the mock object with the supplied property', () => {
-                const mock = new Mock<Foo>()
-                    .setup(f => f.bar)
-                    .is(':-)');
-                expect(mock.Object.bar).toEqual(':-)');
-            });
-
-            it('should extend the mock object with the supplied function', () => {
-                const mock = new Mock<Foo>()
-                    .setup(f => f.fighters)
-                    .is(() => false);
-                expect(mock.Object.fighters()).toBeFalsy();
-            });
-
-            it('should extend the mock object with spies for the supplied function', () => {
-                const mock = new Mock<Foo>()
-                    .setup(f => f.fighters)
-                    .is(() => false);
-                mock.Object.fighters();
-                expect(mock.Object.fighters).toHaveBeenCalled();
-            });
-
-            it('should have no prob setting up an already extended method', () => {
-                const mock = new Mock<Foo>({ fighters: () => true })
-                    .setup(f => f.fighters)
-                    .is(() => false);
-
-                expect(mock.Object.fighters()).toBeFalsy();
-                expect(mock.Object.fighters).toHaveBeenCalled();
-            });
-
-            it('should have no prob setting up an method that has been setup multiple times', () => {
-                const mock = new Mock<Foo>()
-                    .setup(f => f.fighters)
-                    .is(() => false);
-
-                expect(mock.Object.fighters()).toBeFalsy();
-
-                mock.setup(f => f.fighters)
-                    .is(() => true);
-
-                expect(mock.Object.fighters()).toBeTruthy();
-
-                mock.setup(f => f.fighters)
-                    .is(() => false);
-
-                expect(mock.Object.fighters()).toBeFalsy();
-                expect(mock.Object.fighters).toHaveBeenCalled();
-            });
-
-            it('should have no prob setting up an property that has be setup multiple times', () => {
-                const mock = new Mock<Foo>()
-                    .setup(f => f.bar)
-                    .is('first');
-                expect(mock.Object.bar).toEqual('first');
-
-                mock.setup(f => f.bar)
-                    .is('second');
-
-                expect(mock.Object.bar).toEqual('second');
-
-                mock.setup(f => f.bar)
-                    .is('third');
-                expect(mock.Object.bar).toEqual('third');
-            });
-
-            it('should return undefined if using the Mock.ANY_FUNC', () => {
-                const mock = new Mock<Foo>();
-
-                mock.setup(f => f.fighters).is(Mock.ANY_FUNC);
-
-                expect(mock.Object.fighters()).toBeUndefined();
-                expect(mock.Object.fighters).toHaveBeenCalled();
-            });
-
-            it('should allow setup/is chaining', () => {
-                const mock = new Mock<Foo>();
-
-                mock.setup(f => f.fighters).is(() => false)
-                    .setup(f => f.bar).is('someValue');
-
-                expect(mock.Object.fighters()).toBeFalsy();
-                expect(mock.Object.bar).toEqual('someValue');
-            });
-
-            it('should work with nested types', () => {
-                const mock = new Mock<Foo>();
-                const mockNested = new Mock<Bar>();
-
-                mockNested.setup(b => b.blurg).is('hi');
-                mock.setup(f => f.blah).is(mockNested.Object);
-
-                expect(mock.Object.blah.blurg).toEqual('hi');                
-            });
-        });
-    });
-
-    describe('mixing extend and setup', () => {
-        it('should still work when using setup first', () => {
-            const mock = new Mock<Foo>();
-
-            mock.setup(f => f.fighters).is(() => false);
-            mock.setup(f => f.bar).is('someValue');
-
-            expect(mock.Object.fighters()).toBeFalsy();
-            expect(mock.Object.bar).toEqual('someValue');
-
-            mock.extend({ fighters: () => true, bar: 'someOtherValue' });
-
-            expect(mock.Object.fighters()).toBeTruthy();
-            expect(mock.Object.bar).toEqual('someOtherValue');
-        });
-
-        it('should still work when using extend first', () => {
-            const mock = new Mock<Foo>();
-
-            mock.extend({ fighters: () => true, bar: 'someOtherValue' });
-
-            expect(mock.Object.fighters()).toBeTruthy();
-            expect(mock.Object.bar).toEqual('someOtherValue');
-
-            mock.setup(f => f.fighters).is(() => false);
-            mock.setup(f => f.bar).is('someValue');
-
-            expect(mock.Object.fighters()).toBeFalsy();
-            expect(mock.Object.bar).toEqual('someValue');
-        });
-    });
-
-    it('should allow you to get the spy off of a setup function', () => {
-        const mock = new Mock<Foo>();
-        const spy = mock.setup(x => x.fighters).Spy;
-
-        mock.Object.fighters();
-        expect(spy).toHaveBeenCalled();
-    });
-
-    // testing this scenario:
-    // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
-    it('should allow type inference with private members', () => {
-        const foo = new Foo();
-        const mock = new Mock(foo);
-
-        mock.setup(m => m.fighters).is(() => false);
     });
 });

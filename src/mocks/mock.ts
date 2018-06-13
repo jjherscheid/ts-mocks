@@ -1,9 +1,17 @@
-import { Setup } from './setup';
+import { JasmineHelper } from './spy-helpers/jasmine-helper';
+import { JestHelper } from './spy-helpers/jest-helper';
+import { SpyHelper } from './spy-helpers/spy-helper';
+import { SpyHelperFactory } from './spy-helper-factory';
 
 export type RecursivePartial<T> = Partial<{ [key in keyof T]: RecursivePartial<T[key]> | T[key] }>;
 
 /** Class for mocking objects/interfaces in Typescript */
 export class Mock<T> {
+    private static spyHelper: SpyHelper;
+
+    public static configure(testFramework: 'jasmine' | 'jest') {
+        this.spyHelper = SpyHelperFactory.get(testFramework);
+    }
 
     /**
      * Can be used to define empty methods when using extend
@@ -17,9 +25,7 @@ export class Mock<T> {
     }
 
     public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K] & Function): void {
-        const spy = ((jasmine as any).isSpy(obj[key]) ? obj[key] : spyOn(obj, key)) as jasmine.Spy;
-        spy.calls.reset();
-        spy.and.callFake(stub);
+        this.spyHelper.spyAndCallFake(obj, key, stub);
     }
 
     private _object: T = <T>{};
@@ -37,22 +43,9 @@ export class Mock<T> {
     /** Extend the current mock object with implementation */
     public extend(object: RecursivePartial<T>): this {
         Object.keys(object).forEach((key: keyof T) => {
-            if (typeof object[key] === 'function' && !(jasmine as any).isSpy(object[key])) {
-                spyOn(object, key).and.callThrough();
-            }
+            Mock.spyHelper.spyAndCallThrough(object, key);
         });
         Object.assign(this._object, object);
         return this;
-    }
-
-    /** Setup a property or a method with using lambda style settings */
-    public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
-        const propertyName = this.getPropertyName(value);
-
-        return new Setup(this, propertyName);
-    }
-
-    private getPropertyName<TProp>(value: (obj: T) => TProp): string {
-        return value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
     }
 }

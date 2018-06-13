@@ -3,8 +3,11 @@
         "target": "es6",
         "module": "commonjs",
         "declaration": true,
+        "noImplicitAny" : true,
         "outDir": "lib",
-        "sourceMap": true
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "strictNullChecks": true
     },
     "exclude": [
         "node_modules",
