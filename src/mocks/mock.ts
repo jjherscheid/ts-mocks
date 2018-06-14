@@ -1,9 +1,20 @@
-import { Setup } from './setup';
+import { JasmineHelper } from './spy-helpers/jasmine-helper';
+import { JestHelper } from './spy-helpers/jest-helper';
+import { SpyHelper } from './spy-helpers/spy-helper';
+import { SpyHelperFactory } from './spy-helper-factory';
 
 export type RecursivePartial<T> = Partial<{ [key in keyof T]: RecursivePartial<T[key]> | T[key] }>;
 
 /** Class for mocking objects/interfaces in Typescript */
 export class Mock<T> {
+    private static _spyHelper: SpyHelper;
+
+    private static get spyHelper(): SpyHelper {
+        if(!this._spyHelper) {
+          this._spyHelper = SpyHelperFactory.get();
+        }
+        return this._spyHelper;
+    }
 
     /**
      * Can be used to define empty methods when using extend
@@ -17,13 +28,10 @@ export class Mock<T> {
     }
 
     public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K] & Function): void {
-        const spy = ((jasmine as any).isSpy(obj[key]) ? obj[key] : spyOn(obj, key)) as jasmine.Spy;
-        spy.calls.reset();
-        spy.and.callFake(stub);
+        this.spyHelper.spyAndCallFake(obj, key, stub);
     }
 
     private _object: T = <T>{};
-    private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
     constructor(object: RecursivePartial<T> | T = <T>{}) {
         this._object = object as T;
@@ -38,38 +46,9 @@ export class Mock<T> {
     /** Extend the current mock object with implementation */
     public extend(object: RecursivePartial<T>): this {
         Object.keys(object).forEach((key: keyof T) => {
-            if (typeof object[key] === 'function' && !(jasmine as any).isSpy(object[key])) {
-                const spy = spyOn(object, key).and.callThrough();
-                this._spies.set(key, () => spy);
-            }
+            Mock.spyHelper.spyAndCallThrough(object, key);
         });
         Object.assign(this._object, object);
         return this;
     }
-
-    /** Setup a property or a method with using lambda style settings */
-    public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
-        const propertyName = this.getPropertyName(value);
-
-        let setup = new Setup(this, propertyName);
-        this._spies.set(propertyName, () => setup.Spy);
-        return setup;
-    }
-
-    private getPropertyName<TProp>(value: (obj: T) => TProp): string {
-        return value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
-    }
-
-    /** Get the spy of method or property that has be
-     *  set with extend of setup/is
-     *  REMARK:
-     */
-    public spyOf<TProp>(value: (obj: T) => TProp): jasmine.Spy {
-        const propertyName = this.getPropertyName(value);
-        if (this._spies.has(propertyName)) {
-            return this._spies.get(propertyName)();
-        }
-        return undefined;
-    }
-
 }

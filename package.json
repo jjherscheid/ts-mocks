@@ -6,7 +6,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "karma start"
+    "test:jasmine": "karma start",
+    "test:jest": "jest",
+    "test": "npm run test:jasmine && npm run test:jest"
   },
   "keywords": [
     "typescript",
@@ -26,14 +28,17 @@
   },
   "devDependencies": {
     "@types/jasmine": "^2.5.53",
+    "@types/jest": "^23.0.2",
     "@types/node": "^8.0.17",
     "jasmine-ts": "^0.2.1",
+    "jest": "^23.1.0",
     "karma": "^2.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-typescript": "^3.0.9",
+    "ts-jest": "^22.4.6",
     "ts-node": "^4.1.0",
     "typescript": "2.6.x"
   }

@@ -1,4 +1,6 @@
-lib/*
-node_modules/*
+.git
+lib
+node_modules
 tags
-coverage/*
+coverage
+.vscode
