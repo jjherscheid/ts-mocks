@@ -1,7 +1,9 @@
-# Typescript Mocking Framework
+# Typescript Mocking Framework (using Jasmine)
 
 Create **Type-Safe** Mock objects for Typescript Classes and Interfaces
 Jasmine Spy is automatically created when mocking a method so it is still possible to use verification methods like toHaveBeenCalled().
+
+Note: If you are using other framework like Jest instead of Jasmine. Have a look at https://github.com/ike18t/ts-mockery.
 
 # Changes
 
