@@ -207,3 +207,80 @@ it('override spy during test', () => {
 });
 
 ```
+
+## Using TestBed with Ts-mocks
+
+It you want to use TestBed in combination with ts-mock you should be aware to use the correct provider.
+
+In most example you will se the use of _useValue_ as provider type
+```javascript
+
+  let mockService: Mock<SubService>;
+  let systemUnderTest: MainService;
+
+  beforeEach(() => {
+    mockService = new Mock<SubService>({ getSomeValue: () => 'fake value' });
+
+    TestBed.configureTestingModule({
+      providers: [
+        MainService,
+        { provide: SubService, useValue: mockService.Object}  // <-- useValue is used
+      ]
+    });
+
+    systemUnderTest = TestBed.get(MainService);
+  });
+  
+  it('should return value from mocked subService', () => {
+    // No extra mocking should return initial value
+    expect(systemUnderTest.getSubValue()).toBe('fake value');
+  });
+```
+
+This will work if you don't want to change the behavior of the mock during your test.
+If you still want to change the behavoir like example below this will not work. This is because useValue creates a copy of the object injected, so this is not the same object as the mockService member.
+
+```javascript
+  it('should return another value from mocked subService', () => {
+    mockService.extend({ getSomeValue: () => 'fake another value'});
+
+    expect(systemUnderTest.getSubValue()).toBe('fake another value'); // <-- This will fail
+  });
+```
+
+### Solution for TestBed
+
+The solution for this is _not_ to use _useValue_ but use _useFactory_ which is a method that is called by the DI container every time the service needs to be injected. useFactory is used like so:
+
+```javascript
+let mockService: Mock<SubService>;
+  let systemUnderTest: MainService;
+
+  beforeEach(() => {
+    mockService = new Mock<SubService>({ getSomeValue: () => 'fake value' });
+
+    TestBed.configureTestingModule({
+      providers: [
+        MainService,
+        { provide: SubService, useFactory: () => mockService.Object}   // <-- useFactory
+      ]
+    });
+
+    systemUnderTest = TestBed.get(MainService);
+  });
+
+  it('should return value from mocked subService', () => {
+    // No extra mocking should return initial value
+    expect(systemUnderTest.getSubValue()).toBe('fake value');
+  });
+```
+
+When you now want to change the behavior during your test this is possible:
+
+```javascript
+  it('should return another value from mocked subService', () => {
+    mockService.extend({ getSomeValue: () => 'fake another value'});
+
+    expect(systemUnderTest.getSubValue()).toBe('fake another value');  // <-- Will SUCCEED
+  });
+```
