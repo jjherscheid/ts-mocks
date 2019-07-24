@@ -55,7 +55,7 @@ export class Mock<T> {
     }
 
     private getPropertyName<TProp>(value: (obj: T) => TProp): string {
-        return value.toString().match(/return\s[\w\d_]*\.([\w\d$_]*)\;/)[1];
+        return value.toString().match(/(return|=>)\s[\w\d_]*\.([\w\d$_]*)\;?/)[2];
     }
 
     /** Get the spy of method or property that has be
