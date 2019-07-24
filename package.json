@@ -1,12 +1,12 @@
 {
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
   "author": {
     "name": "Johan Herscheid <johanherscheid@gmail.com>"
   },
   "scripts": {
     "build": "tsc",
-    "test": "karma start"
+    "test": "karma start && karma start karma.conf.es2015.ts"
   },
   "keywords": [
     "typescript",
