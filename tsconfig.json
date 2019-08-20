@@ -11,6 +11,7 @@
         "node_modules",
         "lib",
         "**/*.spec.ts",
-        "**/*.conf.ts"
+        "**/*.conf.ts",
+        "**/*.conf.*.ts"
     ]
 }
