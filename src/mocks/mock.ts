@@ -45,7 +45,12 @@ export class Mock<T> {
         return this;
     }
 
-    /** Setup a property or a method with using lambda style settings */
+    /** 
+     * Setup a property or a method with using lambda style settings.
+     * @param propertyName can be used as a fallback for environments where 
+     * dynamic inferring of `propertyName` is not possible. 
+     * For example, can be helpful in Wallaby.js test runner.
+     */
     public setup<TProp>(value: (obj: T) => TProp, propertyName?: string): Setup<T, TProp> {
         if (!propertyName) {
             propertyName = this.getPropertyName(value);
@@ -60,9 +65,11 @@ export class Mock<T> {
         return value.toString().match(/(return|=>)\s[\w\d_]*\.([\w\d$_]*)\;?/)[2];
     }
 
-    /** Get the spy of method or property that has be
-     *  set with extend of setup/is
-     *  REMARK:
+    /** 
+     * Get the spy of method or property that has be set with extend of setup/is.
+     * @param propertyName can be used as a fallback for environments where 
+     * dynamic inferring of `propertyName` is not possible. 
+     * For example, can be helpful in Wallaby.js test runner.
      */
     public spyOf<TProp>(value: (obj: T) => TProp, propertyName?: string): jasmine.Spy {
         if (!propertyName) {
