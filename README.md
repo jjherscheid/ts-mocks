@@ -284,3 +284,16 @@ When you now want to change the behavior during your test this is possible:
     expect(systemUnderTest.getSubValue()).toBe('fake another value');  // <-- Will SUCCEED
   });
 ```
+
+### A note on setup() and spyOf() methods
+
+Some test environments (for example, [Wallaby.js](https://wallabyjs.com/)) might be incompatible with `ts-mocks` library because these methods use dynamic property name inferring under the hood. In such cases you can try set the property name manually:
+
+```
+  mockCookieService.setup(cs => cs.get, 'get')
+
+  // also possible
+  mockCookieService.spyOf(cs => cs.get, 'get')
+```
+
+Make sure that the property that your lambda `cs => cs.get` returns and the property name `'get'` in the second argument are the same, otherwise the type safety might be broken.
