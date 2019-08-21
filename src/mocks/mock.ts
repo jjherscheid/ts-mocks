@@ -23,7 +23,7 @@ export class Mock<T> {
     private _object: T = <T>{};
     private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
-    constructor(object: Partial<{[key in keyof T]: T[key]}> | T = <T>{}) {
+    constructor(object: Partial<{ [key in keyof T]: T[key] }> | T = <T>{}) {
         this._object = object as T;
         this.extend(object);
     }
@@ -34,7 +34,7 @@ export class Mock<T> {
     }
 
     /** Extend the current mock object with implementation */
-    public extend(object: Partial<{[key in keyof T]: T[key]}>): this {
+    public extend(object: Partial<{ [key in keyof T]: T[key] }>): this {
         Object.keys(object).forEach((key: keyof T) => {
             if (typeof object[key] === 'function' && !(jasmine as any).isSpy(object[key])) {
                 const spy = spyOn(object, key).and.callThrough();
@@ -46,8 +46,10 @@ export class Mock<T> {
     }
 
     /** Setup a property or a method with using lambda style settings */
-    public setup<TProp>(value: (obj: T) => TProp): Setup<T, TProp> {
-        const propertyName = this.getPropertyName(value);
+    public setup<TProp>(value: (obj: T) => TProp, propertyName?: string): Setup<T, TProp> {
+        if (!propertyName) {
+            propertyName = this.getPropertyName(value);
+        }
 
         let setup = new Setup(this, propertyName);
         this._spies.set(propertyName, () => setup.Spy);
@@ -62,8 +64,11 @@ export class Mock<T> {
      *  set with extend of setup/is
      *  REMARK:
      */
-    public spyOf<TProp>(value: (obj: T) => TProp): jasmine.Spy {
-        const propertyName = this.getPropertyName(value);
+    public spyOf<TProp>(value: (obj: T) => TProp, propertyName?: string): jasmine.Spy {
+        if (!propertyName) {
+            propertyName = this.getPropertyName(value);
+        }
+
         if (this._spies.has(propertyName)) {
             return this._spies.get(propertyName)();
         }

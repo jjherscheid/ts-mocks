@@ -40,7 +40,7 @@ describe('Mock', () => {
         });
 
         it('should return undefined if using the Mock.ANY_FUNC', () => {
-            const mock = new Mock<Foo>({fighters : Mock.ANY_FUNC});
+            const mock = new Mock<Foo>({ fighters: Mock.ANY_FUNC });
 
             expect(mock.Object.fighters()).toBeUndefined();
             expect(mock.Object.fighters).toHaveBeenCalled();
@@ -135,7 +135,7 @@ describe('Mock', () => {
         it('should return undefined if using the Mock.ANY_FUNC', () => {
             const mock = new Mock<Foo>();
 
-            mock.extend({fighters : Mock.ANY_FUNC});
+            mock.extend({ fighters: Mock.ANY_FUNC });
 
             expect(mock.Object.fighters()).toBeUndefined();
             expect(mock.Object.fighters).toHaveBeenCalled();
@@ -304,7 +304,7 @@ describe('Mock', () => {
         });
 
         it('should return undefined for properties with setup', () => {
-            const mock = new Mock<Foo>({ bar: ';-)'});
+            const mock = new Mock<Foo>({ bar: ';-)' });
             const spy = mock.spyOf(x => x.bar);
 
             expect(spy).toBeUndefined();
@@ -334,7 +334,7 @@ describe('Mock', () => {
         describe('with extend()', () => {
             it('should return the current spy of that function', () => {
                 const mock = new Mock<Foo>();
-                mock.extend({ fighters: () => true});
+                mock.extend({ fighters: () => true });
                 const spy = mock.spyOf(x => x.fighters);
 
                 expect(mock.Object.fighters()).toBeTruthy();
@@ -343,8 +343,8 @@ describe('Mock', () => {
 
             it('should return the current spy of that function after extend multiple times', () => {
                 const mock = new Mock<Foo>();
-                mock.extend({ fighters: () => true});
-                mock.extend({ fighters: () => false});
+                mock.extend({ fighters: () => true });
+                mock.extend({ fighters: () => false });
                 const spy = mock.spyOf(x => x.fighters);
 
                 expect(mock.Object.fighters()).toBeFalsy();
@@ -354,7 +354,7 @@ describe('Mock', () => {
 
         describe('with constructor()', () => {
             it('should return the current spy of that function', () => {
-                const mock = new Mock<Foo>({ fighters: () => true});
+                const mock = new Mock<Foo>({ fighters: () => true });
                 const spy = mock.spyOf(x => x.fighters);
 
                 expect(mock.Object.fighters()).toBeTruthy();
@@ -364,9 +364,9 @@ describe('Mock', () => {
 
         describe('when mixing contructor/setup/extend', () => {
             it('should return the current spy of that function', () => {
-                const mock = new Mock<Foo>({ fighters: () => true});
+                const mock = new Mock<Foo>({ fighters: () => true });
                 mock.setup(x => x.fighters).is(() => false);
-                mock.extend({ fighters: () => true});
+                mock.extend({ fighters: () => true });
 
                 const spy = mock.spyOf(x => x.fighters);
 
@@ -392,4 +392,22 @@ describe('Mock', () => {
 
         mock.setup(m => m.fighters).is(() => false);
     });
+
+    it('setup() should use the provided propertyName string', () => {
+        const foo = new Foo();
+        const mock = new Mock(foo);
+
+        const spy = mock.setup(it => it.bar, 'fighters').Spy
+        mock.Object.fighters()
+        expect(spy).toHaveBeenCalled()
+    })
+
+    it('spyOf() should use the provided propertyName string', () => {
+        const foo = new Foo();
+        const mock = new Mock(foo);
+
+        const spy = mock.spyOf(it => it.bar, 'fighters')
+        mock.Object.fighters()
+        expect(spy).toHaveBeenCalled()
+    })
 });
