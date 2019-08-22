@@ -3,12 +3,6 @@
 Create **Type-Safe** Mock objects for Typescript Classes and Interfaces
 Jasmine Spy is automatically created when mocking a method so it is still possible to use verification methods like toHaveBeenCalled().
 
-Note: If you are using other framework like Jest instead of Jasmine. Have a look at https://github.com/ike18t/ts-mockery.
-
-# Changes
-
-**1.0 => 2.0** Has breaking change in API. But that's only if you used the .Spy properties of the setup() and is() methods
-
 **Example**:
 
 Initializing and setting up a new Mock object can be done in several ways:
@@ -297,3 +291,6 @@ Some test environments (for example, [Wallaby.js](https://wallabyjs.com/)) might
 ```
 
 Make sure that the property that your lambda `cs => cs.get` returns and the property name `'get'` in the second argument are the same, otherwise the type safety might be broken.
+
+### A note on using other frameworks then Jasmin
+If you are using other framework like Jest instead of Jasmine. Have a look at https://github.com/ike18t/ts-mockery.

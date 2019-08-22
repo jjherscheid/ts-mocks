@@ -253,6 +253,15 @@ describe('Mock', () => {
                 expect(mock.Object.bar).toEqual('someValue');
             });
         });
+
+        it('should use the provided propertyName string if specified', () => {
+            const foo = new Foo();
+            const mock = new Mock(foo);
+    
+            const spy = mock.setup(it => it.bar, 'fighters').Spy
+            mock.Object.fighters()
+            expect(spy).toHaveBeenCalled()
+        })  
     });
 
     describe('mixing extend and setup', () => {
@@ -374,6 +383,15 @@ describe('Mock', () => {
                 expect(spy).toHaveBeenCalled();
             });
         });
+
+        it('should use the provided propertyName string if specified', () => {
+            const foo = new Foo();
+            const mock = new Mock(foo);
+    
+            const spy = mock.spyOf(it => it.bar, 'fighters')
+            mock.Object.fighters()
+            expect(spy).toHaveBeenCalled()
+        })
     });
 
     it('should allow you to get the spy off of a setup function', () => {
@@ -391,23 +409,5 @@ describe('Mock', () => {
         const mock = new Mock(foo);
 
         mock.setup(m => m.fighters).is(() => false);
-    });
-
-    it('setup() should use the provided propertyName string', () => {
-        const foo = new Foo();
-        const mock = new Mock(foo);
-
-        const spy = mock.setup(it => it.bar, 'fighters').Spy
-        mock.Object.fighters()
-        expect(spy).toHaveBeenCalled()
-    })
-
-    it('spyOf() should use the provided propertyName string', () => {
-        const foo = new Foo();
-        const mock = new Mock(foo);
-
-        const spy = mock.spyOf(it => it.bar, 'fighters')
-        mock.Object.fighters()
-        expect(spy).toHaveBeenCalled()
-    })
+    });      
 });
