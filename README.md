@@ -81,8 +81,15 @@ Now the ```as<T>()``` comes into the rescue. With this method you can overrule t
 ```javascript
     mockSomeService
         .setup(ss => ss.get)
-        .as<() => Observable<User>>()
+        .as<(value:number) => Observable<User>>()
         .is((value) => of(someUser));
+
+// Or if not using the 'value' argument
+
+    mockSomeService
+        .setup(ss => ss.get)
+        .as<() => Observable<User>>()
+        .is(() => of(someUser));
 ```
 
 With this typescript will not complain anymore. Great! ;-)
