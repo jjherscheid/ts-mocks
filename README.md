@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/ts-mocks.svg)](https://badge.fury.io/js/ts-mocks)
+
 # Typescript Mocking Framework (using Jasmine)
 
 Create **Type-Safe** Mock objects for Typescript Classes and Interfaces
