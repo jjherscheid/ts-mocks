@@ -15,7 +15,7 @@ module.exports = (config: any) => {
         preprocessors: {
             '**/*.ts': ['karma-typescript']
         },
-        reporters: ['dots', 'karma-typescript', 'kjhtml', 'coverage'],
+        reporters: ['dots', 'karma-typescript', 'kjhtml'],
         singleRun: true,
 
         karmaTypescriptConfig: {
