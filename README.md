@@ -66,7 +66,7 @@ If you would like to mock this in you unit test normally you would write:
 
     //     or
 
-    mockSeomService
+    mockSomeService
         .extend({ get: (value) => of(someUser)});
 ```
 
