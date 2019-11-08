@@ -76,7 +76,8 @@ Type 'Observable<User>' is not assignable to type 'Observable<T>'.
 Type 'User' is not assignable to type 'T'.
 ```
 
-Now the ```as<T>()``` comes into the rescue. With this method you can overrule the return value that is automatically determined by the setup() method.
+Now the ```as<T>()``` comes into the rescue. With this method you can overrule the return value that is automatically determined by the setup() method.  
+**Note**: _Please note that this can conflict with the real code if not used appropriately, so use at your own risc_
 
 ```javascript
     mockSomeService
