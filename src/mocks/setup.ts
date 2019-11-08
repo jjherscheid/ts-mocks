@@ -25,4 +25,12 @@ export class Setup<T, TReturn> {
         }
         return this.mock;
     }
+
+    /** 
+     * Specify the return value of the property / method
+     * Can be used when mocking generic methods.
+     */
+    public as<TReturnAs>(): Setup<T, TReturnAs> {
+        return new Setup(this.mock, this.key);
+    }
 }

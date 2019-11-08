@@ -1,5 +1,4 @@
 import { Mock } from './mock';
-import { BADQUERY } from 'dns';
 
 class Foo {
     private bah = 'hi';
@@ -9,6 +8,9 @@ class Foo {
     fightersVoid = (i: number): void => {
         // do something with i
     };
+    public fightersGeneric<T>(input: string): T {
+        return {} as T;
+    }
     static bar(): string {
         throw new Error();
     }
@@ -167,6 +169,26 @@ describe('Mock', () => {
             });
         });
 
+        describe('with generic method without as()', () => {
+            it('is() should return an objects as any to transpile', () => {
+                const mock = new Mock<Foo>();
+                mock.setup(f => f.fightersGeneric)
+                    .is((i) => ({ name: i }) as any);
+                expect(mock.Object.fightersGeneric<{ name: string }>('test')).toEqual({ name: 'test' });
+            });
+        });
+
+        describe('with generic method with as()', () => {
+            it('is() should return an objects as with type specified in as', () => {
+                const mock = new Mock<Foo>();
+                mock.setup(f => f.fightersGeneric)
+                    .as<{ name: string }>()
+                    .is((i) => ({ name: i }));
+
+                expect(mock.Object.fightersGeneric<{ name: string }>('test')).toEqual({ name: 'test' });
+            });
+        });
+
         describe('with is()', () => {
             it('should extend the mock object with the supplied property', () => {
                 const mock = new Mock<Foo>()
@@ -257,11 +279,11 @@ describe('Mock', () => {
         it('should use the provided propertyName string if specified', () => {
             const foo = new Foo();
             const mock = new Mock(foo);
-    
+
             const spy = mock.setup(it => it.bar, 'fighters').Spy
             mock.Object.fighters()
             expect(spy).toHaveBeenCalled()
-        })  
+        })
     });
 
     describe('mixing extend and setup', () => {
@@ -387,7 +409,7 @@ describe('Mock', () => {
         it('should use the provided propertyName string if specified', () => {
             const foo = new Foo();
             const mock = new Mock(foo);
-    
+
             const spy = mock.spyOf(it => it.bar, 'fighters')
             mock.Object.fighters()
             expect(spy).toHaveBeenCalled()
@@ -409,5 +431,5 @@ describe('Mock', () => {
         const mock = new Mock(foo);
 
         mock.setup(m => m.fighters).is(() => false);
-    });      
+    });
 });
