@@ -35,6 +35,14 @@ Initializing and setting up a new Mock object can be done in several ways:
   mockCookieService
       .setup(cs => cs.get).is((key) => `customized ${key}`)
       .setup(cs => cs.put).is((key) => { /* do something */ });
+
+  // 4. Get the jasmine calls object for a specific method
+  let countsOfGet = mockCookieService
+                        .callsOf(cs => cs.get).count();
+
+  // 5. Reset the calls of the specific method
+  mockCookieService
+      .resetCalls(cs => cs.get);
 ```
 
 ### Generic methods

@@ -416,20 +416,72 @@ describe('Mock', () => {
         })
     });
 
+    describe('using callsOf()', () => {
+        it('should return undefined if no setup found for method', () => {
+            const mock = new Mock<Foo>();
+            const calls = mock.callsOf(x => x.fighters);
+
+            expect(calls).toBeUndefined();
+        });
+
+        it('should return undefined for properties without setup', () => {
+            const mock = new Mock<Foo>();
+            const calls = mock.callsOf(x => x.bar);
+
+            expect(calls).toBeUndefined();
+        });
+
+        it('should return undefined for properties with setup', () => {
+            const mock = new Mock<Foo>({ bar: ';-)' });
+            const calls = mock.callsOf(x => x.bar);
+
+            expect(calls).toBeUndefined();
+        });
+
+        it('should return the calls of the spied method', () => {
+            const mock = new Mock<Foo>({ fighters: () => true });
+            const calls = mock.callsOf(x => x.fighters);
+
+            mock.Object.fighters();
+            mock.Object.fighters();
+            expect(calls.count()).toEqual(2);
+        });
+    });
+
+    describe('using resetCalls()', () => {
+        it('should not throwError if no setup found for method', () => {
+            const mock = new Mock<Foo>();
+            expect(() => mock.resetCalls(x => x.fighters)).not.toThrow();
+        });
+
+        it('should not throwError for properties without setup', () => {
+            const mock = new Mock<Foo>();
+            expect(() => mock.resetCalls(x => x.bar)).not.toThrow();
+        });
+
+        it('should not throwError for properties with setup', () => {
+            const mock = new Mock<Foo>({ bar: ';-)' });
+            expect(() => mock.resetCalls(x => x.bar)).not.toThrow();
+        });
+
+        it('should reset the calls of the spied method', () => {
+            const mock = new Mock<Foo>({ fighters: () => true });
+            const calls = mock.callsOf(x => x.fighters);
+
+            mock.Object.fighters();
+            mock.Object.fighters();
+            expect(calls.count()).toEqual(2);
+
+            mock.resetCalls(m => m.fighters);
+            expect(calls.count()).toEqual(0);
+        });
+    });
+
     it('should allow you to get the spy off of a setup function', () => {
         const mock = new Mock<Foo>();
         const spy = mock.setup(x => x.fighters).Spy;
 
         mock.Object.fighters();
         expect(spy).toHaveBeenCalled();
-    });
-
-    // testing this scenario:
-    // Property 'bah' is private in type 'Foo' but not in type 'Partial<{ bah: string; bar: string; fighters: () => boolean; fightersWithParams: (par: string) =>...'.
-    it('should allow type inference with private members', () => {
-        const foo = new Foo();
-        const mock = new Mock(foo);
-
-        mock.setup(m => m.fighters).is(() => false);
     });
 });

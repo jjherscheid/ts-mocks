@@ -1,5 +1,5 @@
 {
-    "version": "2.6.1",
+    "version": "3.0.0",
     "description": "Use ts-mocks to create Mock<T> objects for during Unit Tests",
     "author": {
         "name": "Johan Herscheid <johanherscheid@gmail.com>"
@@ -35,6 +35,6 @@
         "karma-sourcemap-loader": "^0.3.7",
         "karma-typescript": "^4.1.1",
         "ts-node": "^4.1.0",
-        "typescript": "2.6.x"
+        "typescript": "~3.0.0"
     }
 }

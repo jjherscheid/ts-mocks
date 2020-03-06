@@ -15,15 +15,15 @@ export class Mock<T> {
     }
 
     public static static<T, K extends keyof T>(obj: T, key: K, stub: T[K] & Function): void {
-        const spy = ((jasmine as any).isSpy(obj[key]) ? obj[key] : spyOn(obj, key)) as jasmine.Spy;
+        const spy = ((jasmine as any).isSpy(obj[key]) ? obj[key] : spyOn(obj as any, key)) as jasmine.Spy;
         spy.calls.reset();
-        spy.and.callFake(stub);
+        spy.and.callFake(stub as any);
     }
 
     private _object: T = <T>{};
     private _spies: Map<string, () => jasmine.Spy> = new Map<string, () => jasmine.Spy>();
 
-    constructor(object: Partial<{ [key in keyof T]: T[key] }> | T = <T>{}) {
+    constructor(object: Partial<{ [key in Extract<keyof T, string>]: T[key] }> | T = <T>{}) {
         this._object = object as T;
         this.extend(object);
     }
@@ -34,10 +34,10 @@ export class Mock<T> {
     }
 
     /** Extend the current mock object with implementation */
-    public extend(object: Partial<{ [key in keyof T]: T[key] }>): this {
-        Object.keys(object).forEach((key: keyof T) => {
+    public extend(object: Partial<{ [key in Extract<keyof T, string>]: T[key] }>): this {
+        Object.keys(object).forEach((key: Extract<keyof T, string>) => {
             if (typeof object[key] === 'function' && !(jasmine as any).isSpy(object[key])) {
-                const spy = spyOn(object, key).and.callThrough();
+                const spy = spyOn(object as any, key).and.callThrough();
                 this._spies.set(key, () => spy);
             }
         });
@@ -82,4 +82,21 @@ export class Mock<T> {
         return undefined;
     }
 
+    /**
+     * Get the jasmineCalls information of a specify method 
+     */
+    public callsOf<TProp>(value: (obj: T) => TProp, propertyName?: string): jasmine.Calls {
+        let spy = this.spyOf(value);
+        return spy ? spy.calls : undefined;
+    }
+
+    /**
+     * Reset the calls count of a specific method
+     */
+    public resetCalls<TProp>(value: (obj: T) => TProp, propertyName?: string): void {
+        let calls = this.callsOf(value)
+        if (calls) {
+            calls.reset();
+        }
+    }
 }

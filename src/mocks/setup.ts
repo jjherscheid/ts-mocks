@@ -10,7 +10,7 @@ export class Setup<T, TReturn> {
         private key: string,
     ) {
         mock.Object[key] = <T>{};
-        this.spy = spyOn(mock.Object, key as keyof T);
+        this.spy = spyOn(mock.Object as any, key as Extract<keyof T, string>);
     }
 
     public get Spy() {
@@ -21,7 +21,7 @@ export class Setup<T, TReturn> {
     public is(value: TReturn): Mock<T> {
         this.mock.Object[this.key] = value;
         if (typeof (value) === 'function') {
-            this.spy = spyOn(this.mock.Object, this.key as keyof T).and.callThrough();
+            this.spy = spyOn(this.mock.Object as any, this.key as keyof T).and.callThrough();
         }
         return this.mock;
     }
