@@ -84,8 +84,11 @@ export class Mock<T> {
 
     /**
      * Get the jasmineCalls information of a specify method 
+     * @summary due to @types/jasmine update the jasmine.Calls is not working anymore
+     * therefor the callsOf method now returns any instead of jasmineCalls.  
+     * In runtime this method returns a jasmine.Calls or jasmine.Calls<Fn>
      */
-    public callsOf<TProp>(value: (obj: T) => TProp, propertyName?: string): jasmine.Calls {
+    public callsOf<TProp>(value: (obj: T) => TProp, propertyName?: string): any {
         let spy = this.spyOf(value);
         return spy ? spy.calls : undefined;
     }
