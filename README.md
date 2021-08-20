@@ -382,5 +382,5 @@ Some test environments (for example, [Wallaby.js](https://wallabyjs.com/)) might
 
 Make sure that the property that your lambda `cs => cs.get` returns and the property name `'get'` in the second argument are the same, otherwise the type safety might be broken.
 
-## A note on using other frameworks then Jasmine
+## A note on using other frameworks than Jasmine
 If you are using other framework like Jest instead of Jasmine. Have a look at https://github.com/ike18t/ts-mockery.
