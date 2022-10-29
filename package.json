@@ -28,7 +28,7 @@
         "@types/jasmine": "^2.5.53",
         "@types/node": "^8.0.17",
         "jasmine-ts": "^0.2.1",
-        "karma": "^4.1.0",
+        "karma": "^6.4.1",
         "karma-chrome-launcher": "^2.2.0",
         "karma-jasmine": "^1.1.1",
         "karma-jasmine-html-reporter": "^0.2.2",
